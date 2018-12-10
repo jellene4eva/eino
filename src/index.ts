@@ -1,4 +1,4 @@
-import { Box2DWorld } from './main';
+import { Box2DWorld } from './main/main';
 
 var c = document.createElement('canvas');
 // var w = window.innerWidth,

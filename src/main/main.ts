@@ -33,8 +33,8 @@ export class Box2DWorld {
 
         //create ground
         bodyDef.type = b2Body.b2_staticBody;
-        bodyDef.position.x = 9;
-        bodyDef.position.y = 13;
+        bodyDef.position.x = 14;
+        bodyDef.position.y = 15;
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(10, 0.5);
         this.world.CreateBody(bodyDef).CreateFixture(fixDef);
