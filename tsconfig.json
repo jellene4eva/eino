@@ -12,7 +12,7 @@
 
         "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
         "baseUrl": "./", /* Base directory to resolve non-absolute module names. */
-        "types": ["node"],                           /* Type declaration files to be included in compilation. */
+        // "types": ["node", "box2dweb"],                           /* Type declaration files to be included in compilation. */
         "lib": [
             "es2016",
             "dom",
