@@ -11,8 +11,8 @@ document.body.appendChild(div);
 var c = document.createElement('canvas');
 // var w = window.innerWidth,
 //     h = window.innerHeight;
-c.width = 800;
-c.height = 600;
+c.width = 1240;
+c.height = 680;
 c.id = 'canvas';
 
 document.body.appendChild(c);
