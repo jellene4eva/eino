@@ -1,5 +1,6 @@
-import * as Box2D from 'box2dweb';
-import { rejects } from 'assert';
+import * as box2d from 'box2dweb';
+
+const Box2D = box2d;
 
 const b2Vec2 = Box2D.Common.Math.b2Vec2;
 const b2BodyDef = Box2D.Dynamics.b2BodyDef;
@@ -22,7 +23,7 @@ export class Box2DWorld {
     framerate = 1000 / 30;
     gravity = 9.8;
     updateInterval;
-    tempTheta = 1;
+    debounce = 0;
     muscle1;
     muscle2;
     body1;
@@ -50,7 +51,7 @@ export class Box2DWorld {
         // edgeShape not ready 
         // @see: https://github.com/hecht-software/box2dweb/issues/31
         fixDef.shape = new b2PolygonShape;
-        fixDef.shape.SetAsEdge(new b2Vec2(-20.0, 18.0), new b2Vec2(40.0, 18.0))
+        fixDef.shape.SetAsEdge(new b2Vec2(-20.0, 18.0), new b2Vec2(60.0, 18.0))
 
         this.world.CreateBody(bodyDef).CreateFixture(fixDef);
 
@@ -60,7 +61,7 @@ export class Box2DWorld {
             // const body1 = this.createBody(4.0, 8.0);
             const body = new b2BodyDef;
             body.type = b2Body.b2_dynamicBody;
-            body.position.Set(6.0, 18.0);
+            body.position.Set(10.0, 10.0);
             body.angle = 50;
             body.angularDamping = 0.4;
 
@@ -81,7 +82,7 @@ export class Box2DWorld {
         {
             const body = new b2BodyDef;
             body.type = b2Body.b2_dynamicBody;
-            body.position.Set(4.0, 16.0);
+            body.position.Set(10.0, 14.0);
             body.angularDamping = 0.4;
 
             const shape = new b2PolygonShape();
@@ -123,7 +124,7 @@ export class Box2DWorld {
         {
             const body = new b2BodyDef;
             body.type = b2Body.b2_dynamicBody;
-            body.position.Set(4.0, 16.0);
+            body.position.Set(10.0, 15.0);
             body.angularDamping = 0.4;
 
             const shape = new b2PolygonShape();
@@ -161,33 +162,30 @@ export class Box2DWorld {
 
         // muscle joint
         {
-            // const axis = new b2Vec2(1.0, 1.0);
+            const axis = new b2Vec2(1.0, 1.0);
 
-            // this.muscle1 = new b2DistanceJointDef
-            // this.muscle1.bodyA = wbody1;
-            // this.muscle1.bodyB = wbody2;
+            this.muscle1 = new b2DistanceJointDef
+            this.muscle1.bodyA = wbody1;
+            this.muscle1.bodyB = wbody2;
             // this.muscle1.localAnchorA.Set(0,0);
             // this.muscle1.localAnchorB.Set(0,0);
             // this.muscle1.length = 4;
-            // this.muscle1.collideConnected = false;
-            // this.muscle1.referenceAngle = 1;
+            this.muscle1.collideConnected = false;
 
-            // this.muscle1.Initialize(wbody1, wbody2, wbody1.GetWorldCenter(), wbody2.GetWorldCenter());
-            // this.muscle1.enableMotor = false;
-            // this.muscle1.enableLimit = false;
-            // this.world.CreateJoint(this.muscle1);
-            console.log('muscle 1', this.muscle1);
+            this.muscle1.Initialize(wbody1, wbody2, wbody1.GetWorldCenter(), wbody2.GetWorldCenter());
+            this.muscle1 = this.world.CreateJoint(this.muscle1);
+            // console.log('muscle 1', this.muscle1, wmuscle1);
         }
         // {
-        //     this.muscle2 = new b2DistanceJointDef;
-        //     this.muscle2.bodyA = wbody2;
-        //     this.muscle2.bodyB = wbody3;
-        //     // this.muscle2.localAnchorA.Set(0,0);
-        //     // this.muscle2.localAnchorB.Set(0,0);
-        //     // this.muscle2.length = 7;
-        //     this.muscle2.Initialize(wbody3, wbody2, wbody3.GetWorldCenter(), wbody2.GetWorldCenter());
-        //     // this.muscle2.collideConnected = false;
-        //     this.world.CreateJoint(this.muscle2);
+            this.muscle2 = new b2DistanceJointDef;
+            this.muscle2.bodyA = wbody2;
+            this.muscle2.bodyB = wbody3;
+            // this.muscle2.localAnchorA.Set(0,0);
+            // this.muscle2.localAnchorB.Set(0,0);
+            // this.muscle2.length = 7;
+            this.muscle2.Initialize(wbody3, wbody2, wbody3.GetWorldCenter(), wbody2.GetWorldCenter());
+            this.muscle2.collideConnected = false;
+            this.muscle2 = this.world.CreateJoint(this.muscle2);
         // }
 
         this.showDebug();
@@ -225,23 +223,23 @@ export class Box2DWorld {
 
     update(world) {
         if (world) {
-            this.muscle1.motorSpeed = Math.cos(this.tempTheta/Math.random()*50) * 100
-            this.world.CreateJoint(this.muscle1);
-            this.muscle2.motorSpeed = Math.cos(this.tempTheta/Math.random()*50) * 100
-            this.world.CreateJoint(this.muscle2);
-            this.tempTheta++;
-            if (this.tempTheta > 30) { this.tempTheta = 1 }
-            // console.log('muscle speed', this.muscle1.GetMotorSpeed());
+            this.debounce++;
+            if (this.debounce === 5) {
+                this.muscle1.SetLength(1 + Math.random()/5 * 50);
+                this.muscle2.SetLength(1 + Math.random()/5 * 50);
+                this.debounce = 0;
+            }
+
             // testbed.g_camera.m_center.x = this.m_car.GetPosition().x;
 
-            if (this.body2.GetPosition().x > 10) {
-                const position = new b2Vec2(20, this.body2.GetPosition().y)
-                this.body2.SetPosition(position);
-            }
+            // if (this.body2.GetPosition().x > 20) {
+            //     const position = new b2Vec2(20, this.body2.GetPosition().y)
+            //     this.body2.SetPosition(position);
+            // }
 
 
             world.Step(
-                1 / 60   //frame-rate
+                1 / 60     //frame-rate
                 , 10       //velocity iterations
                 , 10       //position iterations
             );
