@@ -2,17 +2,17 @@
     "compilerOptions": {
         /* Basic Options */
         "target": "es5", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
-        "module": "commonjs", /* Specify module code generation: 'none', commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
+        "module": "es2015", /* Specify module code generation: 'none', commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
         "sourceMap": true,
         "outDir": "./dist", /* Redirect output structure to the directory. */
 
         /* Strict Type-Checking Options */
         "noImplicitAny": false,                      /* Raise error on expressions and declarations with an implied 'any' type. */
-        "strictNullChecks": true,                   /* Enable strict null checks. */
+        "strictNullChecks": false,                   /* Enable strict null checks. */
 
         "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-        "baseUrl": "./", /* Base directory to resolve non-absolute module names. */
-        "types": ["node", "box2dweb"],                           /* Type declaration files to be included in compilation. */
+        "baseUrl": ".", /* Base directory to resolve non-absolute module names. */
+        "types": ["@types/box2d"],                           /* Type declaration files to be included in compilation. */
         "lib": [
             "es2016",
             "dom",
