@@ -1,4 +1,16 @@
 
 #canvas {
     border: 1px solid black;
+    position: relative;
+    display: block;
+    width: 1200px;
+    height: 800px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 50px;
+    margin-right: 50px;
 }

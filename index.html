@@ -4,9 +4,43 @@
         <title>eino</title>
     </head>
 
-
     <body>
+        <h3>Eino</h3>
+        <div id="stage"></div>
+        <div id="status"></div>
+        <div id="info"></div>
+        <table>
+            <tr>
+                <td>Goal:</td>
+                <td>walk to the right side of the screen while not falling down</td>
+            </tr>
+            <tr>
+                <td>Generation:</td>
+                <td id="generation">1</td>
+            </tr>
+            <tr>
+                <td>Generation Period:</td>
+                <td id="gperiod">5 seconds</td>
+            </tr>
+            <tr>
+                <td>Population size:</td>
+                <td id="popsize">0</td>
+            </tr>
+            <tr>
+                <td>Mutation Rate:</td>
+                <td id="mrate">5%</td>
+            </tr>
+            <tr>
+                <td>Avg Score:</td>
+                <td id="score">0</td>
+            </tr>
+            <tr>
+                <td>Max Score:</td>
+                <td id="maxscore">0</td>
+            </tr>
+        </table>
+        <canvas id="canvas" width="800" height="300"></canvas>
     </body>
-
     <script src="./index.js" type="text/javascript"></script>
+
 </html>

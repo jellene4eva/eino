@@ -51,12 +51,14 @@ export class Box2DWorld {
     bodyfilter = -1;
 
     canvas;
+    ctx;
 
     constructor() {
         const gravity = new b2Vec2(0, this.gravity) as Box2D.Common.Math.b2Vec2;
         this.world = new b2World(gravity, true);
         this.world.SetContinuousPhysics(true);
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.ctx    = this.canvas.getContext('2d') as CanvasRenderingContext2D
     }
 
 
@@ -113,7 +115,7 @@ export class Box2DWorld {
             const fixture = new b2FixtureDef();
             fixture.shape = shape;
             fixture.friction = 1;
-            fixture.density = 0.5;
+            fixture.density = 1;
             fixture.filter.groupIndex = -1;
             wbody2 = this.world.CreateBody(body);
             wbody2.CreateFixture(fixture, 2.0);
@@ -128,7 +130,7 @@ export class Box2DWorld {
             rjd.bodyB = wbody2;
             rjd.localAnchorA.Set(-2,0);
             rjd.localAnchorB.Set(-4,0);
-            rjd.lowerAngle = -2.8;
+            rjd.lowerAngle = -3;
             rjd.upperAngle = -0.6
             rjd.collideConnected = false;
             rjd.enableMotor = true;
@@ -152,7 +154,7 @@ export class Box2DWorld {
             shape.SetAsBox(2, 0.1);
 
             const fixture = new b2FixtureDef();
-            fixture.shape = shape;
+            fixture.shape = shape;;
             fixture.friction = 1;
             fixture.density = 0.5;
             fixture.filter.groupIndex = -1;
@@ -178,42 +180,41 @@ export class Box2DWorld {
             this.world.CreateJoint(rjd);
         }
 
-        // let wbody4;
-        // {
-        //     const body = new b2BodyDef;
-        //     body.type = b2Body.b2_dynamicBody;
-        //     body.position.Set(4.0, 18.0);
 
-        //     const shape = new b2PolygonShape();
-        //     shape.SetAsBox(1, 0.1);
+        let wbody4;
+        {
+            const body = new b2BodyDef;
+            body.type = b2Body.b2_dynamicBody;
+            body.position.Set(2.0, 15);
 
-        //     const fixture: Box2D.Dynamics.b2FixtureDef = new b2FixtureDef();
-        //     fixture.shape = shape;
-        //     fixture.friction = 1;
-        //     fixture.density = 0.5;
-        //     fixture.restitution = 0.2
-            // fixture.filter.groupIndex = -1;
-        //     wbody4 = this.world.CreateBody(body);
-        //     wbody4.CreateFixture(fixture, 2.0);
-        // }
-        // {
-        //     const rjd = new b2RevoluteJointDef;
-        //     // rjd.Initialize(wbody1, wbody2, new b2Vec2(3.0, 6.0));
-        //     rjd.bodyA = wbody1;
-        //     rjd.bodyB = wbody4;
-        //     rjd.localAnchorA.Set(2,0);
-        //     rjd.localAnchorB.Set(1,0);
-        //     rjd.lowerAngle = 0.3 * Math.PI; // -90deg
-        //     rjd.upperAngle = 0.9 * Math.PI; // 45 deg
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(1, 0.1);
 
-        //     rjd.collideConnected = true;
-        //     rjd.enableMotor = false;
-        //     // rjd.motorSpeed = -0.5;
-        //     // rjd.maxMotorTorque = 100;
-        //     rjd.enableLimit = true;
-        //     this.world.CreateJoint(rjd);
-        // }
+            const fixture: Box2D.Dynamics.b2FixtureDef = new b2FixtureDef();
+            fixture.shape = shape;
+            fixture.friction = 1;
+            fixture.density = 1;
+            fixture.filter.groupIndex = -1;
+            wbody4 = this.world.CreateBody(body);
+            wbody4.CreateFixture(fixture, 2.0);
+        }
+        {
+            const rjd: Box2D.Dynamics.Joints.b2RevoluteJointDef = new b2RevoluteJointDef;
+            // rjd.Initialize(wbody1, wbody2, new b2Vec2(3.0, 6.0));
+            rjd.bodyA = wbody4;
+            rjd.bodyB = wbody1;
+            rjd.localAnchorA.Set(1,0);
+            rjd.localAnchorB.Set(2,0);
+            rjd.lowerAngle = 0.2 * Math.PI; 
+            rjd.upperAngle = 0.8 * Math.PI;
 
+            rjd.collideConnected = false;
+            // rjd.enableMotor = true;
+            // rjd.motorSpeed = 0;
+            // rjd.maxMotorTorque = 100;
+            rjd.enableLimit = true;
+            this.world.CreateJoint(rjd);
+        }
 
 
         // MUSCLES
@@ -237,14 +238,14 @@ export class Box2DWorld {
             this.muscle2.collideConnected = true;
             this.muscle2 = this.world.CreateJoint(this.muscle2);
         }
-        // {
-        //     this.muscle3 = new b2DistanceJointDef;
-        //     this.muscle3.bodyA = wbody1;
-        //     this.muscle3.bodyB = wbody4;
-        //     this.muscle3.Initialize(wbody1, wbody4, wbody1.GetWorldCenter(), wbody4.GetWorldCenter());
-        //     this.muscle3.collideConnected = true;
-        //     this.muscle3 = this.world.CreateJoint(this.muscle3);
-        // }
+        {
+            this.muscle3 = new b2DistanceJointDef;
+            this.muscle3.bodyA = wbody1;
+            this.muscle3.bodyB = wbody4;
+            this.muscle3.Initialize(wbody1, wbody4, wbody1.GetWorldCenter(), wbody4.GetWorldCenter());
+            this.muscle3.collideConnected = true;
+            this.muscle3 = this.world.CreateJoint(this.muscle3);
+        }
 
 
         // MEASURE YARD
@@ -269,21 +270,14 @@ export class Box2DWorld {
         }
 
 
-
-
-
-
-
-
-
-
-
-
         this.showDebug();
 
         console.log('%cWorld created SUCCESSFULLY', 'color: green', this.world);
     }
 
+    /**
+     * @deprecated
+     */
     createBody(x, y, length = 2) {
         const body = new b2BodyDef;
         body.type = b2Body.b2_dynamicBody;
@@ -307,18 +301,28 @@ export class Box2DWorld {
         }, this.framerate);
     }
 
+    step(act: { muscle1; muscle2; muscle3; }) {
+        this.update(this.world, act);
+    }
+
     pause() {
         clearInterval(this.updateInterval);
         this.world.Step(0, 0, 0);
     }
 
-    update(world) {
+    update(world, actions?: { muscle1; muscle2; muscle3; }) {
+        if (!actions.muscle1) { actions.muscle1 = 0; }
+        if (!actions.muscle2) { actions.muscle2 = 0; }
+        if (!actions.muscle3) { actions.muscle3 = 0; }
+
         if (world) {
             this.debounce++;
-            if (this.debounce === 20) {
-                this.muscle1.SetLength(1 + Math.random()/5 * 50);
-                this.muscle2.SetLength(1 + Math.random()/5 * 50);
-                // this.muscle3.SetLength(Math.random()/5 * 20);
+            if (this.debounce === 10) {
+                if (actions) {
+                    this.muscle1.SetLength(actions.muscle1);
+                    this.muscle2.SetLength(actions.muscle2);
+                    this.muscle3.SetLength(actions.muscle3);
+                }
                 this.debounce = 0;
             }
 
@@ -346,15 +350,28 @@ export class Box2DWorld {
                 let origin = 10;
                 let originX = 14;
                 for (let i = 0; i < 10; i++) {
-                    const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
-                    ctx.setTransform(1, 0, 0, 1, 0, 0);
-                    ctx.font = "15px DroidSans";
-                    ctx.fillStyle = "#000";
-                    ctx.fillText(origin+' meters', originX * 30, 9.5 * 30);
+                    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    this.ctx.font = "15px DroidSans";
+                    this.ctx.fillStyle = "#000";
+                    this.ctx.fillText(origin+' meters', originX * 30, 9.5 * 30);
                     origin += 5;
                     originX += 5;
                 }
             }
+
+            // {
+            //     this.ctx.font = "30px Verdana";
+            //     this.ctx.fillStyle = "white";
+            //     this.ctx.fillText(info.episode, render.canvas.width - this.ctx.measureText(info.episode).width - 20, 35);
+            
+            //     this.ctx.font = "25px Verdana";
+            //     this.ctx.fillStyle = "white";
+            //     this.ctx.fillText(info.frame, render.canvas.width - this.ctx.measureText(info.frame).width - 20, 65);
+            
+            //     this.ctx.font = "40px Verdana";
+            //     this.ctx.fillStyle = "white";
+            //     this.ctx.fillText(info.score, render.canvas.width - this.ctx.measureText(info.score).width - 20, 105);
+            // }
 
             world.ClearForces();
         } 
